@@ -181,6 +181,23 @@ bottle = {git = "ssh://git@github.com/bottlepy/bottle.git", tag = "0.12.16"}
 
 [`uv`](https://docs.astral.sh/uv/) projects behave just like Pipenv or Poetry projects. When a `uv.lock` file is present and `custom.pythonRequirements.useUv` is not disabled, the Framework will run `uv export --no-dev --frozen --no-hashes` to generate an intermediate `requirements.txt` in `.serverless/requirements.txt` before packaging. Set `useUv: false` if you prefer to manage that file yourself.
 
+### Groups
+
+If your uv configuration includes custom groups, they will not be installed automatically. To include them in the deployment package, use the `uvOptionalDependencies`, `uvWithGroups`, `uvWithoutGroups` and `uvOnlyGroups` options which wrap `uv export`'s `--extra`, `--group`, `--no-group` and `--only-group` parameters.
+
+```yaml
+custom:
+  pythonRequirements:
+    useUv: true
+    uvOptionalDependencies:
+      - internal_dependencies
+      - lambda_dependencies
+    uvWithGroups:
+      - test
+```
+
+### Using uv to install dependencies
+
 If you also want uv to drive the installation step (instead of invoking `python -m pip`), opt-in via `custom.pythonRequirements.installer: uv`:
 
 ```yaml

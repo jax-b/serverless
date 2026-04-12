@@ -583,6 +583,40 @@ test('uv py3.13 can package flask with default options', async (t) => {
   t.end()
 })
 
+test('uv py3.13 can package flask with optional dependencies', async (t) => {
+  process.chdir('tests/uv_optional_dependencies')
+  const { stderr } = sls(['package'], { env: { SLS_DEBUG: '*' } })
+  t.true(
+    stderr && stderr.includes('Generating requirements.txt from uv.lock'),
+    'uv export used',
+  )
+  const zipfiles = await listZipFiles('.serverless/sls-py-req-test.zip')
+  t.true(zipfiles.includes(`flask${sep}__init__.py`), 'flask is packaged')
+  t.true(zipfiles.includes(`boto3${sep}__init__.py`), 'boto3 is packaged')
+  t.false(
+    zipfiles.includes(`pytest-cov${sep}__init__.py`),
+    'pytest-cov is packaged',
+  )
+  t.end()
+})
+
+test('uv py3.13 can package flask with optional groups', async (t) => {
+  process.chdir('tests/uv_optional_groups')
+  const { stderr } = sls(['package'], { env: { SLS_DEBUG: '*' } })
+  t.true(
+    stderr && stderr.includes('Generating requirements.txt from uv.lock'),
+    'uv export used',
+  )
+  const zipfiles = await listZipFiles('.serverless/sls-py-req-test.zip')
+  t.true(zipfiles.includes(`flask${sep}__init__.py`), 'flask is packaged')
+  t.true(zipfiles.includes(`boto3${sep}__init__.py`), 'boto3 is packaged')
+  t.true(
+    zipfiles.includes(`pytest-cov${sep}__init__.py`),
+    'pytest-cov is packaged',
+  )
+  t.end()
+})
+
 test(
   'uv installer with dockerizePip packages successfully',
   async (t) => {
