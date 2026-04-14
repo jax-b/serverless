@@ -200,21 +200,21 @@ By default, the Framework exports only the base `[project.dependencies]` and exc
 
 Use the following options to control which extras and groups are included in the deployment package:
 
-| Option | uv flag | Description |
-|---|---|---|
-| `uvOptionalDependencies` | `--extra` | Include optional dependency extras |
-| `uvWithGroups` | `--group` | Include additional dependency groups |
-| `uvWithoutGroups` | `--no-group` | Exclude specific dependency groups |
-| `uvOnlyGroups` | `--only-group` | Include **only** the specified groups (excludes base dependencies) |
+| Option                   | uv flag        | Description                                                        |
+| ------------------------ | -------------- | ------------------------------------------------------------------ |
+| `uvOptionalDependencies` | `--extra`      | Include optional dependency extras                                 |
+| `uvWithGroups`           | `--group`      | Include additional dependency groups                               |
+| `uvWithoutGroups`        | `--no-group`   | Exclude specific dependency groups                                 |
+| `uvOnlyGroups`           | `--only-group` | Include **only** the specified groups (excludes base dependencies) |
 
 ```yaml
 custom:
   pythonRequirements:
     useUv: true
     uvOptionalDependencies:
-      - aws       # includes [project.optional-dependencies].aws
+      - aws # includes [project.optional-dependencies].aws
     uvWithGroups:
-      - lambda-extras  # includes [dependency-groups].lambda-extras
+      - lambda-extras # includes [dependency-groups].lambda-extras
 ```
 
 To include dev dependencies, add the `dev` group explicitly via `uvWithGroups: [dev]`.
