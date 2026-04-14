@@ -68,40 +68,27 @@ async function uvToRequirements(pluginInstance) {
     await getUvVersion(pluginInstance)
     fse.ensureDirSync(path.join(servicePath, '.serverless'))
     const outPath = path.join(servicePath, '.serverless', 'requirements.txt')
-    let args = [
+    const args = [
       'export',
+      '--no-dev',
       '--frozen',
       '--no-hashes',
       '--no-emit-project',
       '-o',
       outPath,
+      ...(options.uvOptionalDependencies.length
+        ? options.uvOptionalDependencies.flatMap((group) => ['--extra', group])
+        : []),
+      ...(options.uvWithGroups.length
+        ? options.uvWithGroups.flatMap((group) => ['--group', group])
+        : []),
+      ...(options.uvWithoutGroups.length
+        ? options.uvWithoutGroups.flatMap((group) => ['--no-group', group])
+        : []),
+      ...(options.uvOnlyGroups.length
+        ? options.uvOnlyGroups.flatMap((group) => ['--only-group', group])
+        : []),
     ]
-
-    if (options.uvOptionalDependencies) {
-      options.uvOptionalDependencies.forEach((group) => {
-        args.push('--extra', group)
-      })
-    }
-
-    if (options.uvWithGroups && options.uvWithGroups.length > 0) {
-      options.uvWithGroups.forEach((group) => {
-        args.push('--group', group)
-      })
-    } else {
-      args.push('--no-dev')
-    }
-
-    if (options.uvWithoutGroups) {
-      options.uvWithoutGroups.forEach((group) => {
-        args.push('--no-group', group)
-      })
-    }
-
-    if (options.uvOnlyGroups) {
-      options.uvOnlyGroups.forEach((group) => {
-        args.push('--only-group', group)
-      })
-    }
 
     await spawn('uv', args, { cwd: moduleProjectPath })
   } finally {
